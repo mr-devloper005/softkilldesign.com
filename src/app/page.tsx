@@ -114,14 +114,14 @@ function getEditorialTone() {
 
 function getVisualTone() {
   return {
-    shell: 'bg-[#07101f] text-white',
-    panel: 'border border-white/10 bg-[rgba(11,18,31,0.78)] shadow-[0_28px_80px_rgba(0,0,0,0.35)]',
-    soft: 'border border-white/10 bg-white/6',
-    muted: 'text-slate-300',
-    title: 'text-white',
-    badge: 'bg-[#8df0c8] text-[#07111f]',
-    action: 'bg-[#8df0c8] text-[#07111f] hover:bg-[#77dfb8]',
-    actionAlt: 'border border-white/10 bg-white/6 text-white hover:bg-white/10',
+    shell: 'bg-background text-foreground',
+    panel: 'border border-border bg-card',
+    soft: 'border border-border bg-muted/40',
+    muted: 'text-muted-foreground',
+    title: 'text-foreground',
+    badge: 'bg-primary text-primary-foreground',
+    action: 'bg-primary text-primary-foreground hover:opacity-90',
+    actionAlt: 'border border-border bg-background text-foreground hover:bg-muted/60',
   }
 }
 
@@ -345,64 +345,31 @@ function EditorialHome({ primaryTask, articlePosts, supportTasks }: { primaryTas
 
 function VisualHome({ primaryTask, imagePosts, profilePosts, articlePosts }: { primaryTask?: EnabledTask; imagePosts: SitePost[]; profilePosts: SitePost[]; articlePosts: SitePost[] }) {
   const tone = getVisualTone()
-  const gallery = imagePosts.length ? imagePosts.slice(0, 5) : articlePosts.slice(0, 5)
-  const creators = profilePosts.slice(0, 3)
+  const gallery = imagePosts.length ? imagePosts : articlePosts
 
   return (
     <main className={tone.shell}>
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-18">
-        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+      <section className="mx-auto max-w-[1480px] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] ${tone.badge}`}>
-              <ImageIcon className="h-3.5 w-3.5" />
-              Visual publishing system
-            </span>
-            <h1 className={`mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.06em] sm:text-6xl ${tone.title}`}>
-              Image-led discovery with creator profiles and a more gallery-like browsing rhythm.
-            </h1>
-            <p className={`mt-6 max-w-2xl text-base leading-8 ${tone.muted}`}>{SITE_CONFIG.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={primaryTask?.route || '/image-sharing'} className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${tone.action}`}>
-                Open gallery
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/profile" className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${tone.actionAlt}`}>
-                Meet creators
-              </Link>
-            </div>
+            <h1 className="text-2xl font-semibold tracking-[-0.02em] text-foreground">Home feed</h1>
+            <p className={`mt-1 text-sm ${tone.muted}`}>Fresh visual posts in a scrollable masonry board.</p>
           </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-            {gallery.slice(0, 5).map((post, index) => (
-              <Link
-                key={post.id}
-                href={getTaskHref(resolveTaskKey(post.task, 'image'), post.slug)}
-                className={index === 0 ? `col-span-2 row-span-2 overflow-hidden rounded-[2.4rem] ${tone.panel}` : `overflow-hidden rounded-[1.8rem] ${tone.soft}`}
-              >
-                <div className={index === 0 ? 'relative h-[360px]' : 'relative h-[170px]'}>
-                  <ContentImage src={getPostImage(post)} alt={post.title} fill className="object-cover" />
-                </div>
-              </Link>
-            ))}
-          </div>
+          <Link href={primaryTask?.route || '/image-sharing'} className={`hidden items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold sm:inline-flex ${tone.action}`}>
+            Explore
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className={`rounded-[2rem] p-7 ${tone.panel}`}>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Visual notes</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Larger media surfaces, fewer boxes, stronger pacing.</h2>
-            <p className={`mt-4 max-w-2xl text-sm leading-8 ${tone.muted}`}>This product avoids business-directory density and publication framing. The homepage behaves more like a visual board, with profile surfaces and imagery leading the experience.</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {creators.map((post) => (
-              <Link key={post.id} href={`/profile/${post.slug}`} className={`rounded-[1.8rem] p-5 ${tone.soft}`}>
-                <div className="relative h-40 overflow-hidden rounded-[1.2rem]">
-                  <ContentImage src={getPostImage(post)} alt={post.title} fill className="object-cover" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold">{post.title}</h3>
-                <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>{post.summary || 'Creator profile and visual identity surface.'}</p>
-              </Link>
-            ))}
-          </div>
+        <div className="pin-masonry">
+          {gallery.map((post) => {
+            const taskKey = resolveTaskKey(post.task, 'image')
+            return (
+              <div key={post.id} className="pin-item">
+                <TaskPostCard post={post} href={getTaskHref(taskKey, post.slug)} taskKey={taskKey} compact />
+              </div>
+            )
+          })}
         </div>
       </section>
     </main>

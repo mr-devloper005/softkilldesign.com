@@ -37,13 +37,13 @@ export function NavbarAuthControls() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="sm" className="hidden h-10 gap-1 rounded-full bg-[#AE2448] px-4 text-white shadow-[0_16px_30px_rgba(174,36,72,0.24)] hover:bg-[#8e1b3b] sm:flex">
+          <Button size="sm" className="hidden h-10 gap-1 rounded-full bg-primary px-4 text-primary-foreground shadow-[0_12px_26px_rgba(0,0,0,0.12)] hover:opacity-90 sm:flex">
             <Plus className="h-4 w-4" />
             Create
             <ChevronDown className="h-3 w-3" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 border-[rgba(110,26,55,0.12)] bg-[rgba(255,250,244,0.98)]">
+        <DropdownMenuContent align="end" className="w-56 border-border bg-popover">
           {SITE_CONFIG.tasks.filter((task) => task.enabled).map((task) => {
             const Icon = taskIcons[task.key] || LayoutGrid
             return (
@@ -60,21 +60,21 @@ export function NavbarAuthControls() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="relative rounded-full text-[#5f4750] hover:bg-[rgba(110,26,55,0.06)] hover:text-[#8f1f3f]">
+          <Button variant="ghost" size="icon" className="relative rounded-full text-foreground/80 hover:bg-muted hover:text-foreground">
             <Bell className="h-5 w-5" />
-            <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-[#72BAA9] p-0 text-[10px] text-[#10211c]">
+            <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-foreground p-0 text-[10px] text-background">
               3
             </Badge>
             <span className="sr-only">Notifications</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-80 border-[rgba(110,26,55,0.12)] bg-[rgba(255,250,244,0.98)]">
-          <div className="flex items-center justify-between border-b border-[rgba(110,26,55,0.08)] p-3">
-            <span className="text-sm font-semibold text-[#35131f]">Notifications</span>
+        <DropdownMenuContent align="end" className="w-80 border-border bg-popover">
+          <div className="flex items-center justify-between border-b border-border p-3">
+            <span className="text-sm font-semibold text-foreground">Notifications</span>
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto p-0 text-xs text-[#7f646b]"
+              className="h-auto p-0 text-xs text-muted-foreground"
               onClick={() =>
                 toast({
                   title: 'Notifications cleared',
@@ -88,15 +88,15 @@ export function NavbarAuthControls() {
           <div className="max-h-80 overflow-y-auto">
             <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
               <span className="text-sm">Your article was published</span>
-              <span className="text-xs text-[#7f646b]">2 minutes ago</span>
+              <span className="text-xs text-muted-foreground">2 minutes ago</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
               <span className="text-sm">New follower: James Chen</span>
-              <span className="text-xs text-[#7f646b]">1 hour ago</span>
+              <span className="text-xs text-muted-foreground">1 hour ago</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
               <span className="text-sm">Your listing is expiring soon</span>
-              <span className="text-xs text-[#7f646b]">3 hours ago</span>
+              <span className="text-xs text-muted-foreground">3 hours ago</span>
             </DropdownMenuItem>
           </div>
         </DropdownMenuContent>
@@ -104,22 +104,22 @@ export function NavbarAuthControls() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="rounded-full text-[#5f4750] hover:bg-[rgba(110,26,55,0.06)] hover:text-[#8f1f3f]">
-            <Avatar className="h-9 w-9 border border-[rgba(110,26,55,0.12)]">
+          <Button variant="ghost" size="icon" className="rounded-full text-foreground/80 hover:bg-muted hover:text-foreground">
+            <Avatar className="h-9 w-9 border border-border">
               <AvatarImage src={user?.avatar} alt={user?.name} />
               <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 border-[rgba(110,26,55,0.12)] bg-[rgba(255,250,244,0.98)]">
+        <DropdownMenuContent align="end" className="w-56 border-border bg-popover">
           <div className="flex items-center gap-3 p-3">
-            <Avatar className="h-10 w-10 border border-[rgba(110,26,55,0.12)]">
+            <Avatar className="h-10 w-10 border border-border">
               <AvatarImage src={user?.avatar} alt={user?.name} />
               <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <span className="text-sm font-medium">{user?.name}</span>
-              <span className="text-xs text-[#7f646b]">{user?.email}</span>
+              <span className="text-xs text-muted-foreground">{user?.email}</span>
             </div>
           </div>
           <DropdownMenuSeparator />

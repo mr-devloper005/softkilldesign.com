@@ -29,9 +29,9 @@ const variantShells = {
   'listing-showcase': 'bg-[linear-gradient(180deg,#ffffff_0%,#f4f9ff_100%)]',
   'article-editorial': 'bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.08),transparent_20%),linear-gradient(180deg,#fff8ef_0%,#ffffff_100%)]',
   'article-journal': 'bg-[linear-gradient(180deg,#fffdf9_0%,#f7f1ea_100%)]',
-  'image-masonry': 'bg-[linear-gradient(180deg,#09101d_0%,#111c2f_100%)] text-white',
-  'image-portfolio': 'bg-[linear-gradient(180deg,#07111f_0%,#13203a_100%)] text-white',
-  'profile-creator': 'bg-[linear-gradient(180deg,#0a1120_0%,#101c34_100%)] text-white',
+  'image-masonry': 'bg-background text-foreground',
+  'image-portfolio': 'bg-background text-foreground',
+  'profile-creator': 'bg-background text-foreground',
   'profile-business': 'bg-[linear-gradient(180deg,#f6fbff_0%,#ffffff_100%)]',
   'classified-bulletin': 'bg-[linear-gradient(180deg,#edf3e4_0%,#ffffff_100%)]',
   'classified-market': 'bg-[linear-gradient(180deg,#f4f6ef_0%,#ffffff_100%)]',
@@ -60,7 +60,7 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
   const shellClass = variantShells[layoutKey as keyof typeof variantShells] || 'bg-background'
   const Icon = taskIcons[task] || LayoutGrid
 
-  const isDark = ['image-masonry', 'image-portfolio', 'profile-creator'].includes(layoutKey)
+  const isDark = false
   const ui = isDark
     ? {
         muted: 'text-slate-300',
@@ -80,9 +80,9 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
       : {
           muted: 'text-slate-600',
           panel: 'border border-slate-200 bg-white',
-          soft: 'border border-slate-200 bg-slate-50',
-          input: 'border border-slate-200 bg-white text-slate-950',
-          button: 'bg-slate-950 text-white hover:bg-slate-800',
+          soft: 'border border-slate-200 bg-muted/40',
+          input: 'border border-slate-200 bg-muted/50 text-slate-950 placeholder:text-slate-500',
+          button: 'bg-primary text-primary-foreground hover:opacity-90',
         }
 
   return (
@@ -170,18 +170,21 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
         ) : null}
 
         {layoutKey === 'image-masonry' || layoutKey === 'image-portfolio' ? (
-          <section className="mb-12 grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-            <div>
-              <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${ui.soft}`}>
-                <Icon className="h-3.5 w-3.5" /> Visual feed
+          <section className="mb-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className={`text-xs font-semibold uppercase tracking-[0.24em] ${ui.muted}`}>{taskConfig?.label || task}</p>
+                <h1 className="mt-2 text-3xl font-semibold tracking-[-0.03em] text-foreground">{taskConfig?.description || 'Latest posts'}</h1>
               </div>
-              <h1 className="mt-5 text-5xl font-semibold tracking-[-0.05em]">{taskConfig?.description || 'Latest posts'}</h1>
-              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>This surface leans into stronger imagery, larger modules, and more expressive spacing so visual content feels materially different from reading and directory pages.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className={`min-h-[220px] rounded-[2rem] ${ui.panel}`} />
-              <div className={`min-h-[220px] rounded-[2rem] ${ui.soft}`} />
-              <div className={`col-span-2 min-h-[120px] rounded-[2rem] ${ui.panel}`} />
+              <form className="flex w-full max-w-xl items-center gap-3 sm:w-auto" action={taskConfig?.route || '#'}>
+                <select name="category" defaultValue={normalizedCategory} className={`h-11 w-44 rounded-full px-4 text-sm ${ui.input}`}>
+                  <option value="all">All</option>
+                  {CATEGORY_OPTIONS.map((item) => (
+                    <option key={item.slug} value={item.slug}>{item.name}</option>
+                  ))}
+                </select>
+                <button type="submit" className={`h-11 rounded-full px-5 text-sm font-semibold ${ui.button}`}>Filter</button>
+              </form>
             </div>
           </section>
         ) : null}
