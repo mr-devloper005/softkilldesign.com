@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Bookmark, Compass, Image as ImageIcon, Search, Sparkles, UserRound } from 'lucide-react'
+import { ArrowRight, Compass, Search, Sparkles, UserRound } from 'lucide-react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
 import { SchemaJsonLd } from '@/components/seo/schema-jsonld'
@@ -11,18 +11,13 @@ import { siteContent } from '@/config/site.content'
 export const HOME_PAGE_OVERRIDE_ENABLED = true
 
 export async function HomePageOverride() {
-  const [imagePosts, profilePosts, articlePosts, savedPosts] = await Promise.all([
+  const [imagePosts, profilePosts] = await Promise.all([
     fetchTaskPosts('image', 24),
     fetchTaskPosts('profile', 10),
-    fetchTaskPosts('article', 6),
-    fetchTaskPosts('sbm', 6),
   ])
 
   const leadPins = imagePosts.slice(0, 12)
   const creatorPins = profilePosts.slice(0, 4)
-  const readingPins = articlePosts.slice(0, 3)
-  const savedPins = savedPosts.slice(0, 3)
-  const boardLabels = ['Home details', 'Color studies', 'Editorial layouts', 'Creator kits', 'Textures', 'Typography']
 
   return (
     <div className="min-h-screen pin-shell text-[#24191a]">
@@ -78,22 +73,30 @@ export async function HomePageOverride() {
               <div className="pin-stat-tile">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#2c687b]">Discovery</p>
                 <p className="mt-2 text-xl font-semibold">Visual-first</p>
-                <p className="mt-2 text-sm leading-6 text-[#5f4b4d]">Articles, saved links, and other tasks stay accessible in lighter surfaces below.</p>
+                <p className="mt-2 text-sm leading-6 text-[#5f4b4d]">Saved boards and lighter routes stay easy to open when you need them, without pulling focus from the image feed.</p>
               </div>
             </div>
-            <div className="pin-surface mt-8 rounded-[2rem] p-5">
-              <div className="flex items-center gap-3 rounded-full bg-white px-4 py-3 shadow-sm">
-                <Search className="h-4 w-4 text-[#db1a1a]" />
-                <span className="text-sm text-[#5f4b4d]">Search boards, shots, moods, creators, and saved references</span>
+            <form className="pin-surface mt-8 rounded-[2rem] p-4 sm:p-5" action="/search" method="get">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex min-h-12 min-w-0 flex-1 items-center gap-3 rounded-full border border-[rgba(44,104,123,0.12)] bg-white px-4 py-2 shadow-sm">
+                  <Search className="h-4 w-4 shrink-0 text-[#db1a1a]" aria-hidden />
+                  <input
+                    type="search"
+                    name="q"
+                    placeholder="Search boards, shots, moods, creators, and saved references"
+                    className="min-w-0 flex-1 border-0 bg-transparent text-sm text-[#24191a] outline-none placeholder:text-[#5f4b4d]"
+                    autoComplete="off"
+                    enterKeyHint="search"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-[#db1a1a] px-6 text-sm font-semibold text-white shadow-sm hover:bg-[#c41515]"
+                >
+                  Search
+                </button>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {boardLabels.map((label) => (
-                  <span key={label} className="rounded-full border border-[rgba(44,104,123,0.12)] bg-white px-3 py-2 text-xs font-semibold text-[#2c687b]">
-                    {label}
-                  </span>
-                ))}
-              </div>
-            </div>
+            </form>
           </div>
 
           <div>
@@ -105,7 +108,7 @@ export async function HomePageOverride() {
           </div>
         </section>
 
-        <section className="mt-14 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="mt-14">
           <div className="pin-surface-strong rounded-[2.2rem] p-6 sm:p-8">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -121,38 +124,6 @@ export async function HomePageOverride() {
               {creatorPins.map((post, index) => (
                 <TaskPostCard key={post.id ?? `${post.slug}-${index}`} post={post} href={`/profile/${post.slug}`} taskKey="profile" compact />
               ))}
-            </div>
-          </div>
-
-          <div className="grid gap-6">
-            <div className="pin-surface rounded-[2rem] p-6">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="pin-badge"><ImageIcon className="h-3.5 w-3.5" />Fresh reading</div>
-                  <h2 className="mt-4 text-2xl font-semibold tracking-[-0.04em]">Articles appear as supporting stories, not the homepage default.</h2>
-                </div>
-                <Link href="/articles" className="text-sm font-semibold text-[#db1a1a]">All articles</Link>
-              </div>
-              <div className="mt-5 grid gap-4">
-                {readingPins.map((post, index) => (
-                  <TaskPostCard key={post.id ?? `${post.slug}-${index}`} post={post} href={`/articles/${post.slug}`} taskKey="article" compact />
-                ))}
-              </div>
-            </div>
-
-            <div className="pin-surface rounded-[2rem] p-6">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="pin-badge"><Bookmark className="h-3.5 w-3.5" />Saved resources</div>
-                  <h2 className="mt-4 text-2xl font-semibold tracking-[-0.04em]">Low-emphasis routes still stay live, useful, and easy to reach.</h2>
-                </div>
-                <Link href="/sbm" className="text-sm font-semibold text-[#2c687b]">Open library</Link>
-              </div>
-              <div className="mt-5 grid gap-4">
-                {savedPins.map((post, index) => (
-                  <TaskPostCard key={post.id ?? `${post.slug}-${index}`} post={post} href={`/sbm/${post.slug}`} taskKey="sbm" compact />
-                ))}
-              </div>
             </div>
           </div>
         </section>
