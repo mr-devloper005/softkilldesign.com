@@ -2,6 +2,8 @@
 
 export const storageKeys = {
   user: 'nexus-user',
+  /** Set on successful login/signup; cleared on logout. Mirrors persisted session state. */
+  authSession: 'nexus-auth-session',
   bookmarks: 'nexus-bookmarks',
   bookmarkCollections: 'nexus-bookmark-collections',
   articles: 'nexus-articles',

@@ -183,6 +183,34 @@ export function TaskPostCard({
     )
   }
 
+  if (variant === 'image') {
+    return (
+      <Link href={href} className="group block overflow-hidden rounded-[1.25rem] bg-muted/40 transition">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          <ContentImage
+            src={image}
+            alt={altText}
+            fill
+            sizes={imageSizes}
+            quality={75}
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            intrinsicWidth={960}
+            intrinsicHeight={1200}
+          />
+          <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <div className="absolute inset-0 bg-black/10" />
+            <span className="absolute right-3 top-3 inline-flex h-9 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground shadow">
+              Save
+            </span>
+          </div>
+        </div>
+        <div className="px-1.5 pb-1.5 pt-2">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground">{post.title}</h3>
+        </div>
+      </Link>
+    )
+  }
+
   return (
     <Link href={href} className={`group flex h-full flex-col overflow-hidden transition duration-300 ${visualVariant.frame}`}>
       <div className={`relative ${imageAspect} overflow-hidden bg-[#ede2dc]`}>

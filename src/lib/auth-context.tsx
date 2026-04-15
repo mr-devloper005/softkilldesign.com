@@ -25,6 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const storedUser = loadFromStorage<User | null>(storageKeys.user, null)
     if (storedUser) {
       setUser(storedUser)
+      const session = loadFromStorage<{ loggedInAt: string; email: string } | null>(storageKeys.authSession, null)
+      if (!session || session.email !== storedUser.email) {
+        saveToStorage(storageKeys.authSession, {
+          loggedInAt: session?.loggedInAt ?? new Date().toISOString(),
+          email: storedUser.email,
+        })
+      }
     }
   }, [])
 
@@ -60,6 +67,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           })
       setUser(nextUser)
       saveToStorage(storageKeys.user, nextUser)
+      saveToStorage(storageKeys.authSession, {
+        loggedInAt: new Date().toISOString(),
+        email: nextUser.email,
+      })
     }
     setIsLoading(false)
   }, [buildUser])
@@ -68,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem(storageKeys.user)
+      window.localStorage.removeItem(storageKeys.authSession)
     }
   }, [])
 
@@ -84,6 +96,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       setUser(nextUser)
       saveToStorage(storageKeys.user, nextUser)
+      saveToStorage(storageKeys.authSession, {
+        loggedInAt: new Date().toISOString(),
+        email: nextUser.email,
+      })
     }
     setIsLoading(false)
   }, [buildUser])

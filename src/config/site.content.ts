@@ -2,25 +2,25 @@ import type { TaskKey } from '@/lib/site-config'
 
 export const siteContent = {
   navbar: {
-    tagline: 'Independent reading platform',
+    tagline: 'Visual discovery boards',
   },
   footer: {
-    tagline: 'Stories, resources, and discoverable posts',
+    tagline: 'Save ideas. Build boards. Share visuals.',
   },
   hero: {
-    badge: 'Latest stories and visuals',
-    title: ['A thoughtful home for', 'stories, visuals, and discovery.'],
+    badge: 'Fresh pins and ideas',
+    title: ['Save ideas you love', 'and build visual boards.'],
     description:
-      'Explore fresh articles, image-led posts, and discoverable content across the platform through a calmer and clearer browsing experience.',
+      'Explore image-led posts through a fast masonry feed. Save what you like and keep building your boards.',
     primaryCta: {
-      label: 'Read latest stories',
-      href: '/articles',
-    },
-    secondaryCta: {
-      label: 'Explore visuals',
+      label: 'Explore feed',
       href: '/image-sharing',
     },
-    searchPlaceholder: 'Search stories, visuals, listings, and more',
+    secondaryCta: {
+      label: 'Browse collections',
+      href: '/sbm',
+    },
+    searchPlaceholder: 'Search ideas, pins, boards, and creators',
     focusLabel: 'Focus',
     featureCardBadge: 'latest cover rotation',
     featureCardTitle: 'Latest posts shape the visual identity of the homepage.',
@@ -29,35 +29,35 @@ export const siteContent = {
   },
   home: {
     metadata: {
-      title: 'Stories, visuals, and discoverable content',
+      title: 'Visual discovery boards',
       description:
-        'Explore articles, images, listings, and curated posts through a cleaner reading-first experience.',
-      openGraphTitle: 'Stories, visuals, and discoverable content',
+        'Explore image-led posts through a Pinterest-like masonry feed and save ideas into boards.',
+      openGraphTitle: 'Visual discovery boards',
       openGraphDescription:
-        'Discover articles, visual posts, and connected content through a calmer reading-first experience.',
-      keywords: ['story platform', 'article site', 'visual content', 'content discovery'],
+        'Discover image-led posts and save ideas through a fast masonry feed.',
+      keywords: ['image sharing', 'visual discovery', 'masonry feed', 'pins', 'boards'],
     },
     introBadge: 'About the platform',
-    introTitle: 'Built for reading, browsing, and connecting different kinds of content.',
+    introTitle: 'Built for visual discovery, saving, and sharing.',
     introParagraphs: [
-      'This site brings together article-style reading, visual browsing, and structured discovery so visitors can move naturally between different content types.',
-      'Instead of separating stories, visuals, and supporting resources into disconnected surfaces, the platform keeps them connected in one place with consistent navigation and easier exploration.',
-      'Whether someone starts with a story, an image-led post, a listing, or a resource page, they can keep discovering related content without friction.',
+      'This site is designed like a visual board: quick scanning, strong imagery, and lightweight interactions.',
+      'Pins keep you moving through ideas while still supporting every task and route from the shared platform.',
+      'Start from images, then branch into deeper content when you want more context.',
     ],
     sideBadge: 'At a glance',
     sidePoints: [
-      'Reading-first homepage with stronger emphasis on stories and imagery.',
-      'Connected sections for articles, visuals, listings, and supporting resources.',
-      'Cleaner browsing rhythm designed to make exploration feel easier.',
-      'Lightweight interactions that keep the experience fast and readable.',
+      'Masonry-style image feed built for fast scanning.',
+      'Pinterest-like red/white visual language with rounded pins.',
+      'Task pages retain their original logic while feeling visually distinct.',
+      'Lightweight motion and strong performance on mobile and desktop.',
     ],
     primaryLink: {
-      label: 'Browse articles',
-      href: '/articles',
+      label: 'Open image sharing',
+      href: '/image-sharing',
     },
     secondaryLink: {
-      label: 'See visuals',
-      href: '/image-sharing',
+      label: 'Browse saved resources',
+      href: '/sbm',
     },
   },
   cta: {
