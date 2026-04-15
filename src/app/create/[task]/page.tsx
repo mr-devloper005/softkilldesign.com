@@ -171,11 +171,18 @@ export default function CreateTaskPage() {
   const params = useParams();
   const taskKey = params?.task as TaskKey;
 
-  const taskConfig = useMemo(
-    () => SITE_CONFIG.tasks.find((task) => task.key === taskKey && task.enabled),
-    [taskKey]
-  );
   const formConfig = FORM_CONFIG[taskKey];
+
+  const taskConfig = useMemo(() => {
+    const base = SITE_CONFIG.tasks.find((task) => task.key === taskKey);
+    if (!base || !formConfig) return undefined;
+    if (base.enabled) return base;
+    // Image and profile create flows stay available from the FAB even when those routes are flagged off in site tasks.
+    if (taskKey === "image" || taskKey === "profile") {
+      return { ...base, enabled: true };
+    }
+    return undefined;
+  }, [taskKey, formConfig]);
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [uploadingPdf, setUploadingPdf] = useState(false);

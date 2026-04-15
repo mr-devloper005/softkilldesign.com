@@ -37,6 +37,21 @@ const descriptions: Record<TaskKey, string> = {
   comment: 'Comment streams remain connected and browseable without dominating the page.',
 }
 
+/** Replaces legacy intro pills (articles, listings, classifieds) with site-wide pages. */
+function contentPillLinks(task: TaskKey): { label: string; href: string }[] {
+  const aboutHelp = [
+    { label: 'About', href: '/about' },
+    { label: 'Help', href: '/help' },
+  ] as const
+  if (task === 'image') {
+    return [...aboutHelp, { label: 'View profiles', href: '/profile' }]
+  }
+  if (task === 'profile') {
+    return [...aboutHelp, { label: 'Browse image sharing', href: '/image-sharing' }]
+  }
+  return [...aboutHelp, { label: 'Contact', href: '/contact' }]
+}
+
 function introTitle(task: TaskKey) {
   switch (task) {
     case 'image': return 'Image feed built like a living inspiration board.'
@@ -103,7 +118,7 @@ export async function TaskListPageOverride({ task, category }: { task: TaskKey; 
               <button type="submit" className="pin-button h-12">Apply</button>
             </form>
             <div className="mt-5 flex flex-wrap gap-2">
-              {(intro?.links || []).slice(0, 3).map((link) => (
+              {contentPillLinks(task).map((link) => (
                 <Link key={link.href} href={link.href} className="rounded-full border border-[rgba(44,104,123,0.12)] bg-white px-3 py-2 text-xs font-semibold text-[#2c687b]">{link.label}</Link>
               ))}
             </div>

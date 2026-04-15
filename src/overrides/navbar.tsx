@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Compass, Menu, Search, Sparkles, UserRound, X } from 'lucide-react'
+import { Menu, Search, UserRound, X } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { useAuth } from '@/lib/auth-context'
 
@@ -24,18 +24,16 @@ export function NavbarOverride() {
     () => [
       { label: 'Images', href: '/image-sharing' },
       { label: 'Profiles', href: '/profile' },
-      { label: 'Articles', href: '/articles' },
-      { label: 'Saved', href: '/sbm' },
     ],
     [],
   )
 
   const moreLinks = useMemo(
     () => [
-      { label: 'Listings', href: '/listings' },
-      { label: 'Classifieds', href: '/classifieds' },
-      { label: 'PDF', href: '/pdf' },
-      { label: 'Blog', href: '/blog' },
+      { label: 'About', href: '/about' },
+      { label: 'Help', href: '/help' },
+      { label: 'Contact', href: '/contact' },
+      { label: 'Privacy', href: '/privacy' },
     ],
     [],
   )
@@ -44,8 +42,8 @@ export function NavbarOverride() {
     <header className="sticky top-0 z-50 border-b border-[rgba(44,104,123,0.12)] bg-[rgba(255,246,246,0.88)] backdrop-blur-xl">
       <nav className="mx-auto flex max-w-[1500px] items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3 rounded-full bg-white px-3 py-2 shadow-sm">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#db1a1a] text-white shadow-[0_10px_20px_rgba(219,26,26,0.22)]">
-            <Sparkles className="h-5 w-5" />
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[rgba(44,104,123,0.12)] bg-white shadow-sm">
+            <img src="/favicon.png?v=skd2" alt="" width={44} height={44} className="h-9 w-9 object-contain" />
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-semibold text-[#24191a]">{SITE_CONFIG.name}</p>
@@ -56,7 +54,7 @@ export function NavbarOverride() {
         <div className="hidden min-w-0 flex-1 items-center gap-2 md:flex">
           <Link href="/search" className="flex h-12 min-w-0 flex-1 items-center gap-3 rounded-full bg-white px-5 text-sm text-[#5f4b4d] shadow-sm">
             <Search className="h-4 w-4 text-[#db1a1a]" />
-            <span className="truncate">Search images, creators, saved boards, and stories</span>
+            <span className="truncate">Search images, creators, and saved boards</span>
           </Link>
           {primaryLinks.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
@@ -73,7 +71,6 @@ export function NavbarOverride() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Link href="/create/image" className="pin-button px-4 py-3">Create</Link>
           {isAuthenticated ? <NavbarAuthControls /> : <Link href="/register" className="rounded-full bg-[#2c687b] px-4 py-3 text-sm font-semibold text-white">Join</Link>}
         </div>
 
@@ -95,9 +92,8 @@ export function NavbarOverride() {
               </Link>
             ))}
           </div>
-          <div className="mt-4 flex gap-2">
-            <Link href="/create/image" className="pin-button flex-1">Create pin</Link>
-            <Link href="/profile" className="pin-button-ghost flex-1 justify-center"><UserRound className="h-4 w-4" />Profile</Link>
+          <div className="mt-4">
+            <Link href="/profile" className="pin-button-ghost flex w-full justify-center py-3"><UserRound className="h-4 w-4" />Profile</Link>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {moreLinks.map((item) => (
