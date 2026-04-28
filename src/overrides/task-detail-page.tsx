@@ -1,6 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowRight, Bookmark, Globe, Mail, MapPin, Phone, Tag, UserRound } from 'lucide-react'
+import { ArrowRight, Bookmark, Globe, Mail, MapPin, Phone, Tag, UserRound, Share2, MessageSquare, Trophy, Star, Award, HelpCircle, FileText, BookOpen, Lightbulb, Video, User, GraduationCap, TrendingUp, Plus, ShieldCheck } from 'lucide-react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
 import { TaskPostCard } from '@/components/shared/task-post-card'
@@ -11,6 +13,7 @@ import { ArticleComments } from '@/components/tasks/article-comments'
 import { fetchTaskPostBySlug, fetchTaskPosts, buildPostUrl } from '@/lib/task-data'
 import { getTaskConfig, SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import type { SitePost } from '@/lib/site-connector'
+import { useState, useEffect } from 'react'
 
 export const TASK_DETAIL_PAGE_OVERRIDE_ENABLED = true
 
@@ -32,98 +35,263 @@ function text(value: unknown) {
   return typeof value === 'string' ? value : ''
 }
 
-export async function TaskDetailPageOverride({ task, slug }: { task: TaskKey; slug: string }) {
-  const post = await fetchTaskPostBySlug(task, slug).catch(() => null)
+export function TaskDetailPageOverride({ task, slug }: { task: TaskKey; slug: string }) {
+  const [activeTab, setActiveTab] = useState('overview')
+  const [post, setPost] = useState<SitePost | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchTaskPostBySlug(task, slug)
+      .then((data) => {
+        setPost(data)
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }, [task, slug])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f8fbff] text-slate-950">
+        <NavbarShell />
+        <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="text-center">Loading...</div>
+        </main>
+      </div>
+    )
+  }
+
   if (!post) notFound()
 
   const content = getContent(post)
   const taskConfig = getTaskConfig(task)
   const images = getImages(post, content)
   const description = text(content.description) || post.summary || 'Details coming soon.'
-  const html = formatRichHtml(text(content.body) || description, 'Details coming soon.')
   const location = text(content.address) || text(content.location)
   const website = text(content.website)
   const phone = text(content.phone)
   const email = text(content.email)
   const category = text(content.category) || post.tags?.[0] || taskConfig?.label || task
-  const related = (await fetchTaskPosts(task, 6)).filter((item) => item.slug !== post.slug).slice(0, 3)
   const url = buildPostUrl(task, post.slug)
-  const articleDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : ''
-  const isArticle = task === 'article'
-  const isImage = task === 'image'
-  const isProfile = task === 'profile'
+  const memberSince = post.publishedAt 
+    ? new Date(post.publishedAt).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    : '2025/10/15'
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: User },
+    { id: 'contributions', label: 'Contributions', icon: Trophy },
+    { id: 'certifications', label: 'Certifications', icon: Award },
+    { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
+    { id: 'endorsements', label: 'Endorsements', icon: ShieldCheck },
+  ]
+
+  const contentTypes = [
+    { id: 'questions', label: 'Questions', count: 0, icon: HelpCircle },
+    { id: 'solutions', label: 'Solutions', count: 0, icon: Lightbulb },
+    { id: 'articles', label: 'Articles', count: 0, icon: FileText },
+    { id: 'videos', label: 'Videos', count: 0, icon: Video },
+    { id: 'tutorials', label: 'Tutorials', count: 0, icon: BookOpen },
+    { id: 'posts', label: 'Posts', count: 0, icon: MessageSquare },
+  ]
 
   return (
-    <div className="min-h-screen pin-shell text-[#24191a]">
+    <div className="min-h-screen bg-[#f8fbff] text-slate-950">
       <NavbarShell />
-      <main className="mx-auto max-w-[1500px] px-4 pb-14 pt-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <SchemaJsonLd
           data={{
             '@context': 'https://schema.org',
-            '@type': isArticle ? 'Article' : 'WebPage',
+            '@type': 'WebPage',
             headline: post.title,
             description,
             url,
           }}
         />
 
-        <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <div className="pin-badge"><Tag className="h-3.5 w-3.5" />{category}</div>
-            <h1 className="pin-page-title mt-5 max-w-[12ch]">{post.title}</h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-[#5f4b4d]">{description}</p>
-            <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#2c687b]">
-              {location ? <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2"><MapPin className="h-4 w-4" />{location}</span> : null}
-              {website ? <a href={website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2"><Globe className="h-4 w-4" />Website</a> : null}
-              {phone ? <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2"><Phone className="h-4 w-4" />{phone}</span> : null}
-              {email ? <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2"><Mail className="h-4 w-4" />{email}</span> : null}
-              {articleDate ? <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2">{articleDate}</span> : null}
+        <Link href={taskConfig?.route || '/' + task} className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-950">
+          ← Back to {taskConfig?.label || task}
+        </Link>
+
+        {/* Header Section */}
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] mb-6">
+          <div className="flex items-start justify-between gap-6">
+            <div className="flex items-start gap-6 flex-1">
+              {/* Logo */}
+              <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-3xl font-bold">{post.title.charAt(0)}</span>
+              </div>
+              
+              {/* Company Info */}
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-slate-900 mb-1">{post.title}</h1>
+                <p className="text-sm text-slate-600 mb-3">{category}</p>
+                
+                <div className="space-y-2 text-sm text-slate-600">
+                  {location && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      <span>{location}</span>
+                    </div>
+                  )}
+                  {website && (
+                    <div className="flex items-center gap-2">
+                      <Globe className="h-4 w-4" />
+                      <a href={website} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline break-all">{website}</a>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span>Member Since: {memberSince}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <button className="p-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors">
+                <Share2 className="h-5 w-5 text-slate-600" />
+              </button>
+              <button className="flex items-center gap-2 px-5 py-3 rounded-full bg-slate-950 text-white font-semibold hover:bg-slate-800 transition-colors">
+                <MessageSquare className="h-5 w-5" />
+                Message
+              </button>
             </div>
           </div>
-          <div className="pin-surface rounded-[2rem] p-4 sm:p-5">
-            {isImage ? (
-              <TaskImageCarousel images={images} title={post.title} />
-            ) : (
-              <div className="overflow-hidden rounded-[1.6rem]">
-                <TaskImageCarousel images={images} title={post.title} />
+
+          {/* Navigation Tabs */}
+          <div className="mt-6 border-b border-slate-200">
+            <nav className="flex space-x-8">
+              {tabs.map((tab) => {
+                const Icon = tab.icon
+                const isActive = activeTab === tab.id
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`
+                      flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200
+                      ${isActive 
+                        ? 'border-blue-500 text-blue-600' 
+                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                      }
+                    `}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {tab.label}
+                  </button>
+                )
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid gap-6 lg:grid-cols-[1fr_350px]">
+          {/* Left Content Area */}
+          <div className="space-y-6">
+            {/* Activity Section */}
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-blue-500" />
+                Activity
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2 mb-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-600">Points this month</span>
+                  <span className="text-lg font-semibold text-slate-900">0</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-600">Total points</span>
+                  <span className="text-lg font-semibold text-slate-900">0</span>
+                </div>
+              </div>
+              
+              <h3 className="text-sm font-semibold text-slate-700 mb-3">Content Types</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {contentTypes.map((type) => {
+                  const Icon = type.icon
+                  return (
+                    <button
+                      key={type.id}
+                      className="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
+                    >
+                      <Icon className="h-4 w-4 text-slate-500" />
+                      <div className="text-left">
+                        <span className="text-sm text-slate-700 block">{type.label}</span>
+                        <span className="text-xs text-slate-500">{type.count}</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Professional Background */}
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <User className="h-5 w-5 text-slate-500" />
+                Professional Background
+              </h2>
+              <p className="text-sm text-slate-600">No Professional Background shown</p>
+            </div>
+
+            {/* Education */}
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <GraduationCap className="h-5 w-5 text-slate-500" />
+                Education
+              </h2>
+              <p className="text-sm text-slate-600">No Education Background shown</p>
+            </div>
+          </div>
+
+          {/* Right Sidebar - Level Progress */}
+          <div className="space-y-6">
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                  Level Progress
+                </h2>
+                <button className="p-2 rounded-full hover:bg-slate-100 transition-colors">
+                  <Plus className="h-5 w-5 text-slate-500" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-600">Current</span>
+                  <span className="text-lg font-semibold text-slate-900">Level 0</span>
+                </div>
+                
+                <div className="w-full bg-slate-200 rounded-full h-2">
+                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: '0%' }}></div>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-slate-500">0 / 2,000 XP</span>
+                  <span className="text-xs text-slate-500">2,000 to level up</span>
+                </div>
+              </div>
+
+              <a href="#" className="mt-4 text-sm text-blue-600 hover:underline block">
+                What do levels mean?
+              </a>
+            </div>
+
+            {/* Images */}
+            {images.length > 0 && (
+              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Gallery</p>
+                <div className="mt-4 overflow-hidden rounded-[1.6rem]">
+                  <TaskImageCarousel images={images} />
+                </div>
               </div>
             )}
           </div>
-        </section>
-
-        <section className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
-          <div className="pin-surface-strong rounded-[2.2rem] p-6 sm:p-8">
-            {isProfile ? (
-              <div className="mb-8 flex items-center gap-4 rounded-[1.6rem] bg-white p-4 shadow-sm">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#2c687b] text-white"><UserRound className="h-7 w-7" /></div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#2c687b]">Creator surface</p>
-                  <h2 className="mt-1 text-2xl font-semibold text-[#24191a]">Identity, work, and discoverability in one page.</h2>
-                </div>
-              </div>
-            ) : null}
-            <RichContent html={html} className="article-content" />
-            {isArticle ? <ArticleComments slug={slug} /> : null}
-          </div>
-
-          <aside className="space-y-5">
-            <div className="pin-surface rounded-[2rem] p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#2c687b]">Keep exploring</p>
-              <div className="mt-4 grid gap-3">
-                <Link href={taskConfig?.route || '/' + task} className="pin-button justify-center">Back to {taskConfig?.label || task}<ArrowRight className="h-4 w-4" /></Link>
-                <Link href="/image-sharing" className="pin-button-ghost justify-center">Image feed</Link>
-                <Link href="/profile" className="pin-button-ghost justify-center">Profiles</Link>
-              </div>
-            </div>
-            {related.length ? (
-              <div className="space-y-4">
-                {related.map((item, index) => (
-                  <TaskPostCard key={item.id ?? item.slug + '-' + index} post={item} href={buildPostUrl(task, item.slug)} taskKey={task} compact />
-                ))}
-              </div>
-            ) : null}
-          </aside>
-        </section>
+        </div>
       </main>
       <Footer />
     </div>
