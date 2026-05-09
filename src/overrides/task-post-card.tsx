@@ -120,8 +120,7 @@ export function TaskPostCardOverride({ post, href, taskKey, compact }: { post: S
   if (task === 'listing' || task === 'classified') {
     return (
       <Link href={href} className="group flex h-full flex-col rounded-[1.75rem] border border-[rgba(44,104,123,0.12)] bg-[linear-gradient(180deg,#fffdfb_0%,#fff6f6_100%)] p-5 shadow-[0_18px_36px_rgba(44,104,123,0.08)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(44,104,123,0.12)]">
-        <div className="flex items-center justify-between gap-3">
-          <span className="pin-badge">{task === 'listing' ? 'Listing' : 'Deal'}</span>
+        <div className="flex items-center justify-end">
           <ArrowUpRight className="h-5 w-5 text-[#2c687b]" />
         </div>
         <h3 className="mt-4 text-xl font-semibold tracking-[-0.03em] text-[#24191a]">{post.title}</h3>

@@ -23,7 +23,6 @@ export function NavbarOverride() {
   const primaryLinks = useMemo(
     () => [
       { label: 'Images', href: '/image-sharing' },
-      { label: 'Profiles', href: '/profile' },
     ],
     [],
   )
@@ -91,9 +90,6 @@ export function NavbarOverride() {
                 {item.label}
               </Link>
             ))}
-          </div>
-          <div className="mt-4">
-            <Link href="/profile" className="pin-button-ghost flex w-full justify-center py-3"><UserRound className="h-4 w-4" />Profile</Link>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {moreLinks.map((item) => (

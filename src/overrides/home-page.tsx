@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Compass, Search, Sparkles, UserRound } from 'lucide-react'
+import { ArrowRight, Search } from 'lucide-react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
 import { SchemaJsonLd } from '@/components/seo/schema-jsonld'
@@ -11,13 +11,9 @@ import { siteContent } from '@/config/site.content'
 export const HOME_PAGE_OVERRIDE_ENABLED = true
 
 export async function HomePageOverride() {
-  const [imagePosts, profilePosts] = await Promise.all([
-    fetchTaskPosts('image', 24),
-    fetchTaskPosts('profile', 10),
-  ])
+  const imagePosts = await fetchTaskPosts('image', 24)
 
   const leadPins = imagePosts.slice(0, 12)
-  const creatorPins = profilePosts.slice(0, 4)
 
   return (
     <div className="min-h-screen pin-shell text-[#24191a]">
@@ -39,12 +35,8 @@ export async function HomePageOverride() {
 
         <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div className="lg:sticky lg:top-24">
-            <div className="pin-badge">
-              <Sparkles className="h-3.5 w-3.5" />
-              Image-first discovery
-            </div>
-            <h1 className="pin-page-title mt-5 max-w-[11ch]">
-              Save ideas faster. Find images worth building from.
+            <h1 className="pin-page-title max-w-[16ch]">
+              Collect ideas effortlessly and discover what stands out.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-8 text-[#5f4b4d]">
               {siteContent.home.metadata.description} The homepage is intentionally image-heavy, so the first scroll feels like a live inspiration board rather than a recycled template.
@@ -54,21 +46,12 @@ export async function HomePageOverride() {
                 Explore images
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/profile" className="pin-button-ghost">
-                Meet creators
-                <UserRound className="h-4 w-4" />
-              </Link>
             </div>
             <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
               <div className="pin-stat-tile">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#2c687b]">Primary task</p>
                 <p className="mt-2 text-xl font-semibold">Image sharing</p>
                 <p className="mt-2 text-sm leading-6 text-[#5f4b4d]">Pins, covers, textures, product shots, and boards stay front-and-center.</p>
-              </div>
-              <div className="pin-stat-tile">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#2c687b]">Secondary task</p>
-                <p className="mt-2 text-xl font-semibold">Profiles</p>
-                <p className="mt-2 text-sm leading-6 text-[#5f4b4d]">Creators are visible, but they support the images rather than taking over the feed.</p>
               </div>
               <div className="pin-stat-tile">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#2c687b]">Discovery</p>
@@ -108,25 +91,6 @@ export async function HomePageOverride() {
           </div>
         </section>
 
-        <section className="mt-14">
-          <div className="pin-surface-strong rounded-[2.2rem] p-6 sm:p-8">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="pin-badge">
-                  <Compass className="h-3.5 w-3.5" />
-                  Featured creators
-                </div>
-                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#24191a]">Profiles that feel adjacent to the image boards, not disconnected from them.</h2>
-              </div>
-              <Link href="/profile" className="pin-button-ghost">Open profiles</Link>
-            </div>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {creatorPins.map((post, index) => (
-                <TaskPostCard key={post.id ?? `${post.slug}-${index}`} post={post} href={`/profile/${post.slug}`} taskKey="profile" compact />
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </div>
