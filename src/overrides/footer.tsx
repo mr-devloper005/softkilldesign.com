@@ -22,7 +22,6 @@ export function FooterOverride() {
           <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-[#2c687b]">Explore</h3>
           <div className="mt-4 grid gap-3">
             <Link href="/image-sharing" className="rounded-[1.4rem] bg-white px-4 py-3 text-sm font-semibold shadow-sm">Image feed</Link>
-            <Link href="/profile" className="rounded-[1.4rem] bg-white px-4 py-3 text-sm font-semibold shadow-sm">Profiles</Link>
           </div>
         </div>
         <div>

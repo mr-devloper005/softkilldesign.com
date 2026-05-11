@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowRight, Bookmark, Globe, Mail, MapPin, Phone, Tag, UserRound, Share2, MessageSquare, Trophy, Star, Award, HelpCircle, FileText, BookOpen, Lightbulb, Video, User, GraduationCap, TrendingUp, Plus, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Bookmark, Globe, Mail, MapPin, Phone, Tag, UserRound, Trophy, Star, Award, HelpCircle, FileText, BookOpen, Lightbulb, Video, User, GraduationCap, TrendingUp, Plus, ShieldCheck, MessageSquare } from 'lucide-react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
 import { TaskPostCard } from '@/components/shared/task-post-card'
@@ -74,9 +74,6 @@ export function TaskDetailPageOverride({ task, slug }: { task: TaskKey; slug: st
   const email = text(content.email)
   const category = text(content.category) || post.tags?.[0] || taskConfig?.label || task
   const url = buildPostUrl(task, post.slug)
-  const memberSince = post.publishedAt 
-    ? new Date(post.publishedAt).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' })
-    : '2025/10/15'
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: User },
@@ -140,24 +137,10 @@ export function TaskDetailPageOverride({ task, slug }: { task: TaskKey; slug: st
                       <a href={website} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline break-all">{website}</a>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    <span>Member Since: {memberSince}</span>
-                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <button className="p-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors">
-                <Share2 className="h-5 w-5 text-slate-600" />
-              </button>
-              <button className="flex items-center gap-2 px-5 py-3 rounded-full bg-slate-950 text-white font-semibold hover:bg-slate-800 transition-colors">
-                <MessageSquare className="h-5 w-5" />
-                Message
-              </button>
-            </div>
           </div>
 
           {/* Navigation Tabs */}

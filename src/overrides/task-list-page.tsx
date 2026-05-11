@@ -44,7 +44,7 @@ function contentPillLinks(task: TaskKey): { label: string; href: string }[] {
     { label: 'Help', href: '/help' },
   ] as const
   if (task === 'image') {
-    return [...aboutHelp, { label: 'View profiles', href: '/profile' }]
+    return aboutHelp
   }
   if (task === 'profile') {
     return [...aboutHelp, { label: 'Browse image sharing', href: '/image-sharing' }]
